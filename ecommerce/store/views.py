@@ -124,7 +124,8 @@ def process_order(request):
         order.transaction_id = transaction_id
 
         # validate against actual price from the Order model
-        if total == order.total_price:
+        # also check if cart is empty
+        if (total == order.total_price) and (len(order.orderitem_set.all()) > 0):
             order.complete = True
         order.save()
 
