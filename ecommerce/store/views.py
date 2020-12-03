@@ -47,6 +47,13 @@ def cart(request):
         orderitems = order.orderitem_set.all()
         total_quantity = order.total_quantity
     else:
+        try:
+            cart = json.loads(request.COOKIES['cart'])
+        except:
+            cart = {}
+
+        print('Cart:', cart)
+
         orderitems = []
 
         # the html will be expecting a variable called order
@@ -55,6 +62,33 @@ def cart(request):
         # with attributes corresponding to the keys
         order = {'total_quantity': 0, 'total_price': 0, 'shipping': False}
         total_quantity = order['total_quantity']
+
+        for i in cart:
+            try:
+                current_quantity = cart[i]['quantity']
+                total_quantity += current_quantity
+
+                product = Product.objects.get(id=i)
+                total_price = (product.price * current_quantity)
+
+                order['total_price'] += total_price
+
+                orderitem = {
+                    'product': {
+                        'id': product.id,
+                        'name': product.name,
+                        'price': product.price,
+                        'imageURL': product.imageURL
+                    },
+                    'quantity': current_quantity,
+                    'total': total_price
+                }
+                orderitems.append(orderitem)
+
+                if product.digital == False:
+                    order['shipping'] = True
+            except:
+                pass
 
     context['orderitems'] = orderitems
     context['order'] = order
@@ -78,7 +112,7 @@ def checkout(request):
         # initialize a dictionary with the expected keys
         # which will be viewed as an object
         # with attributes corresponding to the keys
-        order = {'total_quantity': 0, 'total_price': 0, 'shipping': False}
+        order = {'total_price': 0, 'total_quantity': 0, 'shipping': False}
         total_quantity = order['total_quantity']
 
     context['orderitems'] = orderitems
