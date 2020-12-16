@@ -78,7 +78,7 @@ class Order(models.Model):
     def total_price(self):
         orderitems = self.orderitem_set.all()
         total_price = sum([orderitem.total for orderitem in orderitems])
-        return total_price
+        return float(total_price)
 
     # get total amount
     # of all items

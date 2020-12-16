@@ -69,25 +69,29 @@ def process_order(request):
     if request.user.is_authenticated:
         customer = request.user.customer
         order, created = Order.objects.get_or_create(customer=customer, complete=False)
-        total = float(data['form']['total'])
-        order.transaction_id = transaction_id
-
-        # validate against actual price from the Order model
-        # also check if cart is empty
-        if (total == order.total_price) and (len(order.orderitem_set.all()) > 0):
-            order.complete = True
-        order.save()
-
-        # validate against actual shipping value
-        if order.shipping == True:
-            ShippingAddress.objects.create(
-                customer=customer,
-                order=order,
-                address=data['shipping']['address'],
-                city=data['shipping']['city'],
-                zipcode=data['shipping']['zipcode']
-            )
     else:
-        print('User is not logged in.')
+        customer, order = guest_order(request, data)
+
+    total = float(data['form']['total'])
+    order.transaction_id = transaction_id
+
+    # validate against actual price from the Order model
+    # also check if cart is empty
+    if (total == order.total_price) and (len(order.orderitem_set.all()) > 0):
+        order.complete = True
+    order.save()
+
+    if order.shipping == True:
+        ShippingAddress.objects.create(
+            customer=customer,
+            order=order,
+            address=data['shipping']['address'],
+            city=data['shipping']['city'],
+            zipcode=data['shipping']['zipcode'],
+        )
+
+    print('total: ', total)
+    print('order.total_price: ', order.total_price)
+    print('total == order.total_price: ', total == order.total_price)
 
     return JsonResponse('Payment complete.', safe=False)

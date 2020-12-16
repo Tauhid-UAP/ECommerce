@@ -23,7 +23,9 @@ def cookie_cart(request):
     for i in cart:
         try:
             current_quantity = cart[i]['quantity']
+            print(current_quantity)
             total_quantity += current_quantity
+            print(total_quantity)
 
             product = Product.objects.get(id=i)
             total_price = (product.price * current_quantity)
@@ -46,6 +48,10 @@ def cookie_cart(request):
                 order['shipping'] = True
         except:
             pass
+
+    print(total_quantity)
+
+    order['total_quantity'] = total_quantity
 
     return {
         'total_quantity': total_quantity,
@@ -72,3 +78,36 @@ def cart_data(request):
         'order': order,
         'orderitems': orderitems
     }
+
+def guest_order(request, data):
+    print('User is not logged in.')
+
+    print('COOKIES: ', request.COOKIES)
+
+    name = data['form']['name']
+    email = data['form']['email']
+
+    data = cookie_cart(request)
+    orderitems = data['orderitems']
+
+    customer, created = Customer.objects.get_or_create(
+        email=email,
+    )
+    customer.name = name
+    customer.save()
+
+    order, created = Order.objects.get_or_create(
+        customer=customer,
+        complete=False,
+    )
+
+    for orderitem in orderitems:
+        product = Product.objects.get(id=orderitem['product']['id'])
+
+        OrderItem.objects.create(
+            product=product,
+            order=order,
+            quantity=orderitem['quantity']
+        )
+
+    return customer, order
