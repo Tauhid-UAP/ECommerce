@@ -40,6 +40,12 @@ INSTALLED_APPS = [
 
     # store app
     'store.apps.StoreConfig',
+
+    # django-filter
+    'django_filters',
+
+    # django-widget-tweaks
+    'widget_tweaks',
 ]
 
 MIDDLEWARE = [

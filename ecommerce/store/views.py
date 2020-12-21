@@ -2,11 +2,15 @@ from django.shortcuts import render
 
 from django.http import JsonResponse
 
+from django.core.paginator import Paginator
+
 import json
 
 import datetime
 
 from .models import *
+
+from .filters import *
 
 from .utils import *
 
@@ -19,7 +23,16 @@ def store(request):
 
     products = Product.objects.all().order_by('name')
 
-    context['products'] = products
+    product_filter = ProductFilter(request.GET, queryset=products)
+    # context['athlete_list'] = athlete_list
+    context['product_filter'] = product_filter
+
+    paginated_product_filter = Paginator(product_filter.qs, 4)
+    page_number = request.GET.get('page')
+    product_page_obj = paginated_product_filter.get_page(page_number)
+
+    # context['products'] = products
+    context['product_page_obj'] = product_page_obj
     context['total_quantity'] = data['total_quantity']
 
     return render(request, 'store/store.html', context=context)
