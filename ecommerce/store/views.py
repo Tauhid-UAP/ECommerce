@@ -17,7 +17,7 @@ def store(request):
 
     data = cart_data(request)
 
-    products = Product.objects.all()
+    products = Product.objects.all().order_by('name')
 
     context['products'] = products
     context['total_quantity'] = data['total_quantity']
