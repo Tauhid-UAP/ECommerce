@@ -3,6 +3,9 @@
 {% load static %}
 
 {% block content %}
+<!--	barikoi.css-->
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/barikoi/barikoi-js@b6f6295467c19177a7d8b73ad4db136905e7cad6/dist/barikoi.min.css">
+
     <div class="row">
         <div class="col-lg-6">
             <div class="box-element" id="form-wrapper">
@@ -21,15 +24,20 @@
 						<hr>
 						<p>Shipping Information:</p>
 						<hr>
-						<div class="form-field">
-							<input class="form-control" type="text" name="address" placeholder="Address..">
-						</div>
-						<div class="form-field">
-							<input class="form-control" type="text" name="city" placeholder="City..">
-						</div>
-						<div class="form-field">
-							<input class="form-control" type="text" name="zipcode" placeholder="Zip code..">
-						</div>
+<!--						<div class="form-field">-->
+<!--							<input class="form-control" type="text" name="address" placeholder="Address..">-->
+<!--						</div>-->
+<!--						<div class="form-field">-->
+<!--							<input class="form-control" type="text" name="city" placeholder="City..">-->
+<!--						</div>-->
+<!--						<div class="form-field">-->
+<!--							<input class="form-control" type="text" name="zipcode" placeholder="Zip code..">-->
+<!--						</div>-->
+						<div>
+							<input type="text" class="bksearch">
+							<div class="bklist">
+							</div>
+						 </div>
                     </div>
 
                     <hr>
@@ -66,6 +74,9 @@
         </div>
     </div>
 
+<!--	barikoi.js-->
+	<script src="https://cdn.jsdelivr.net/gh/barikoi/barikoi-js@b6f6295467c19177a7d8b73ad4db136905e7cad6/dist/barikoi.min.js?key:{{barikoi_autocomplete_api_key}}"></script>
+
 	<script type="text/javascript">
 		// enclose in quotes
 		// to make it a string
@@ -91,6 +102,9 @@
 			submitFormData()
 		})
 
+		// selected address object/dictionary from autocomplete address input
+		var selectedData = null
+
 		function submitFormData(){
 			console.log('Payment button clicked.')
 
@@ -107,9 +121,20 @@
 			}
 
 			if(shipping != 'False'){
+				/* without barikoi location autocomplete api
 				shippingInfo.address = form.address.value
 				shippingInfo.city = form.city.value
 				shippingInfo.zipcode = form.zipcode.value
+				*/
+				///* with barikoi location autocomplete api
+				console.log('Setting shippingInfo...')
+				shippingInfo.address = selectedData['address']
+				shippingInfo.city = selectedData['city']
+				shippingInfo.zipcode = selectedData['postcode']
+				//*/
+				console.log(shippingInfo.address)
+				console.log(shippingInfo.city)
+				console.log(shippingInfo.zipcode)
 			}
 
 			if(user == 'AnonymousUser'){
@@ -138,5 +163,12 @@
 				window.location.href = "{% url 'store' %}"
 			})
 		}
+
+		///*
+		Bkoi.onSelect(function () {
+			selectedData = Bkoi.getSelectedData()
+			console.log(selectedData)
+		})
+		//*/
 	</script>
 {% endblock %}

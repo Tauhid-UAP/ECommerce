@@ -4,6 +4,8 @@ from django.http import JsonResponse
 
 from django.core.paginator import Paginator
 
+from django.conf import settings
+
 import json
 
 import datetime
@@ -46,6 +48,8 @@ def cart(request):
 
 def checkout(request):
     context = cart_data(request)
+
+    context['barikoi_autocomplete_api_key'] = settings.BARIKOI_AUTOCOMPLETE_API_KEY
 
     return render(request, 'store/checkout.html', context=context)
 
