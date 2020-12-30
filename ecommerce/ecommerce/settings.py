@@ -25,7 +25,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config('DEBUG')
+# the environment variable will be returned as a string
+# so compare with the string 'False'
+# to set the boolean equivalent of whatever is .env
+DEBUG = config('DEBUG') != 'False'
 
 # Barikoi api key
 BARIKOI_AUTOCOMPLETE_API_KEY = config('BARIKOI_AUTOCOMPLETE_API_KEY')

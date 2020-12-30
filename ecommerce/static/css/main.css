@@ -97,3 +97,29 @@ h1,h2,h3,h4,h5,h6{
 .hidden{
 	display: none!important;
 }
+
+/* my edits */
+
+nav{
+    background: linear-gradient(to bottom left, #8b008b, black, #8b008b, black);
+}
+
+/* for neon light effects */
+
+#btn-login{
+    position: relative;
+    text-align: center;
+    color: #ffffff;
+    border: 2px solid #ffffff;
+    cursor: pointer;
+    border-radius: 100px;
+    transition: 1s;
+}
+
+#btn-login: hover{
+    box-shadow: 0 5px 50px 0 #ffffff inset, 0 5px 50px 0 #ffffff,
+                0 5px 50px 0 #ffffff, 0 5px 50px 0 #ffffff;
+    text-shadow: 0 0 5px #ffffff, 0 0 5px #ffffff;
+}
+
+/* end of neon light effects */
