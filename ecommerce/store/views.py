@@ -6,6 +6,8 @@ from django.core.paginator import Paginator
 
 from django.conf import settings
 
+from django.views.generic import DetailView
+
 import json
 
 import datetime
@@ -112,3 +114,15 @@ def process_order(request):
     print('total == order.total_price: ', total == order.total_price)
 
     return JsonResponse('Payment complete.', safe=False)
+
+class ProductDetailView(DetailView):
+    model = Product
+    template_name = 'store/product_detail.html'
+
+    def get(self, request, pk) :
+        context = {}
+        product = Product.objects.get(id=pk)
+        data = cart_data(request)
+        context['total_quantity'] = data['total_quantity']
+        context['product'] = product
+        return render(request, self.template_name, context)
