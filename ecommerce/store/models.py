@@ -1,5 +1,9 @@
 from django.db import models
 
+from django.dispatch import receiver
+
+from django.db.models.signals import post_save
+
 from django.contrib.auth.models import User
 
 from django.contrib.staticfiles.templatetags.staticfiles import static
@@ -13,6 +17,15 @@ class Customer(models.Model):
 
     def __str__(self):
         return self.name
+
+@receiver(post_save, sender=User)
+def create_customer(sender, instance, created, **kwargs):
+    if created:
+        Customer.objects.get_or_create(
+            user=instance,
+            name=instance.username,
+            email=instance.email
+        )
 
 class Category(models.Model):
     name = models.CharField(max_length=200, unique=True)
